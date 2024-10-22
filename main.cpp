@@ -50,18 +50,20 @@ class Patient : public Person {
 private:
     int age;
     string gender;
+    string disease; // New attribute for disease
 
 public:
-    Patient(const string& name, int age, const string& gender, int id)
-        : Person(name, id), age(age), gender(gender) {}
+    Patient(const string& name, int age, const string& gender, const string& disease, int id)
+        : Person(name, id), age(age), gender(gender), disease(disease) {}
 
     void displayInfo() const override {
         Person::displayInfo();
-        cout << "Age: " << age << "\nGender: " << gender << endl;
+        cout << "Age: " << age << "\nGender: " << gender << "\nDisease: " << disease << endl; // Display disease
     }
 
     int getAge() const { return age; }
     string getGender() const { return gender; }
+    string getDisease() const { return disease; } // Getter for disease
 };
 
 // Doctor class derived from Person
@@ -91,7 +93,8 @@ public:
         cout << "Patient ID: " << patient.getId()
              << " || Name: " << patient.getName()
              << " || Age: " << patient.getAge()
-             << " || Gender: " << patient.getGender() << endl;
+             << " || Gender: " << patient.getGender()
+             << " || Disease: " << patient.getDisease() << endl; // Show disease info
 
         cout << "Doctor ID: " << doctor.getId()
              << " || Name: " << doctor.getName() << endl;
@@ -171,17 +174,20 @@ public:
 
             switch (choice) {
             case 1: {
-                string name, gender;
+                string name, gender, disease;
                 int age;
                 cin.ignore();
                 cout << "Enter Name: ";
                 getline(cin, name);
                 cout << "Enter Age: ";
                 cin >> age;
+                cin.ignore();
                 cout << "Enter Gender: ";
-                cin >> gender;
+                getline(cin, gender);
+                cout << "Enter Disease: "; // Ask for disease
+                getline(cin, disease);
                 int id = patients.size() + 1;
-                patients.emplace_back(name, age, gender, id);
+                patients.emplace_back(name, age, gender, disease, id); // Include disease
                 cout << "\nPatient added successfully!\n";
                 break;
             }
