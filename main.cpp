@@ -6,7 +6,7 @@ using namespace std;
 
 void welcomeScreen() {
     cout << "\n======================================================\n";
-    cout << "\t   WELCOME TO ABC HOSPITAL MANAGEMENT SYSTEM\n";
+    cout << "\t    HOSPITAL MANAGEMENT SYSTEM\n";
     cout << "======================================================\n";
     cout << "Loading";
     for (int i = 0; i < 3; ++i) {
@@ -29,7 +29,7 @@ public:
         this->name = name;
         this->id = id;
     }
-    void displayInfo() {
+    virtual void displayInfo() {  
         cout << "\nName: " << name << "\nID: " << id << endl;
     }
     int getId() { 
@@ -52,7 +52,7 @@ public:
         this->disease = disease;
     }
 
-    void displayInfo() {
+    void displayInfo() override {  
         Person::displayInfo();
         cout << "Age: " << age << "\nGender: " << gender << "\nDisease: " << disease << endl; 
     }
@@ -66,9 +66,9 @@ class Doctor : public Person {
 public:
     Doctor(string name, int id): Person(name, id) {}
 
-    void displayInfo() {
+    void displayInfo() override {  
         Person::displayInfo();
-        cout << "Role: Doctor" << endl;
+        cout << "Doctor name: "<< name << "Doctor id: "<< id << endl;
     }
 };
 
@@ -101,7 +101,6 @@ public:
     }
 };
 
-// Billing class
 class Billing {
 public:
     void generateBill(int patientId, vector<Appointment> appointments) {
@@ -129,7 +128,8 @@ public:
         if (bedNumber >= 0 && bedNumber < totalBeds && beds[bedNumber] == 0) {
             beds[bedNumber] = 1;
             cout << "\nPatient admitted to bed " << bedNumber << endl;
-        } else {
+        } 
+        else {
             cout << "\nInvalid or occupied bed!" << endl;
         }
     }
@@ -138,7 +138,8 @@ public:
         if (bedNumber >= 0 && bedNumber < totalBeds && beds[bedNumber] == 1) {
             beds[bedNumber] = 0;
             cout << "\nPatient discharged from bed " << bedNumber << endl;
-        } else {
+        } 
+        else {
             cout << "\nInvalid or already free bed!" << endl;
         }
     }
@@ -149,7 +150,8 @@ public:
             cout << "Bed " << i << ": ";
             if (beds[i] == 0) {
                 cout << "Free" << endl;
-            } else {
+            } 
+            else {
                 cout << "Occupied" << endl;
             }
         }
@@ -234,6 +236,44 @@ public:
     }
 };
 
+class Ambulance {
+public:
+    bool isAvailable;
+
+    Ambulance() {
+        isAvailable = true;
+    }
+
+    void bookAmbulance() {
+        if (isAvailable) {
+            isAvailable = false;
+            cout << "\nAmbulance booked successfully!\n";
+        } 
+        else {
+            cout << "\nNo ambulance available right now!\n";
+        }
+    }
+
+    void releaseAmbulance() {
+        isAvailable = true;
+        cout << "\nAmbulance is now available.\n";
+    }
+};
+
+class EmergencyWard : public Ward {
+public:
+    EmergencyWard(int totalBeds): Ward(totalBeds) {}
+
+    void admitEmergencyPatient(int bedNumber) {
+        if (beds[bedNumber] == 0) {
+            beds[bedNumber] = 1;
+            cout << "\nEmergency patient admitted to bed " << bedNumber << endl;
+        } else {
+            cout << "\nBed " << bedNumber << " is occupied. Please choose another bed!\n";
+        }
+    }
+};
+
 int main() {
     vector<Patient> patients;
     vector<Doctor> doctors;
@@ -243,14 +283,16 @@ int main() {
     doctors.push_back(Doctor("Dr. Helen", 4));
     vector<Appointment> appointments;
     Admin admin;
-    Ward ward(10);
+    Ward ward(10);  
+    EmergencyWard emergencyWard(5); 
+    Ambulance ambulance;  
 
     welcomeScreen();
 
     char choice;
     do {
         printHeader("Main Menu");
-        cout << "A: Admin | W: Ward | Q: Quit\nEnter your choice: ";
+        cout << "A: Admin | W: Ward | E: Emergency Ward | M: Ambulance | Q: Quit\nEnter your choice: ";
         cin >> choice;
 
         if (choice == 'A' || choice == 'a') {
@@ -271,10 +313,34 @@ int main() {
             } else if (bedChoice == 3) {
                 ward.viewBedStatus();
             }
+        } 
+        else if (choice == 'E' || choice == 'e') {
+            int emergencyChoice, bedNumber;
+            cout << "1. Admit Emergency Patient | 2. View Beds\nEnter choice: ";
+            cin >> emergencyChoice;
+            if (emergencyChoice == 1) {
+                cout << "Enter Emergency Bed Number: ";
+                cin >> bedNumber;
+                emergencyWard.admitEmergencyPatient(bedNumber);
+            } 
+            else if (emergencyChoice == 2) {
+                emergencyWard.viewBedStatus();
+            }
+        } 
+        else if (choice == 'M' || choice == 'm') {
+            int ambulanceChoice;
+            cout << "1. Book Ambulance | 2. Release Ambulance\nEnter choice: ";
+            cin >> ambulanceChoice;
+            if (ambulanceChoice == 1) {
+                ambulance.bookAmbulance();
+            } 
+            else if (ambulanceChoice == 2) {
+                ambulance.releaseAmbulance();
+            }
         }
 
-    } 
-    while (choice != 'Q' && choice != 'q');
+    } while (choice != 'Q' && choice != 'q');
 
     return 0;
 }
+
