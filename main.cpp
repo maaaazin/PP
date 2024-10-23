@@ -1,15 +1,9 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <algorithm>
-#include <iomanip>
-#include <sstream>
-#include <chrono>
-#include <thread>
 
 using namespace std;
 
-// Function to display a welcome screen
 void welcomeScreen() {
     cout << "\n======================================================\n";
     cout << "\t   WELCOME TO ABC HOSPITAL MANAGEMENT SYSTEM\n";
@@ -21,80 +15,83 @@ void welcomeScreen() {
     cout << "\n\n";
 }
 
-// Function to print section headers
-void printHeader(const string& section) {
+void printHeader(string section) {
     cout << "\n================ " << section << " ================\n";
 }
 
-// Base class representing a person in the hospital
 class Person {
 protected:
     string name;
     int id;
 
 public:
-    Person(const string& name, int id) : name(name), id(id) {}
-
-    virtual void displayInfo() const {
+    Person(string name, int id) {
+        this->name = name;
+        this->id = id;
+    }
+    void displayInfo() {
         cout << "\nName: " << name << "\nID: " << id << endl;
     }
-
-    int getId() const { return id; }
-    string getName() const { return name; }
-
-    virtual ~Person() {}
+    int getId() { 
+        return id; 
+    }
+    string getName() { 
+        return name; 
+    }
 };
 
-// Patient class derived from Person
 class Patient : public Person {
-private:
+public:
     int age;
     string gender;
-    string disease; // New attribute for disease
+    string disease; 
 
-public:
-    Patient(const string& name, int age, const string& gender, const string& disease, int id)
-        : Person(name, id), age(age), gender(gender), disease(disease) {}
-
-    void displayInfo() const override {
-        Person::displayInfo();
-        cout << "Age: " << age << "\nGender: " << gender << "\nDisease: " << disease << endl; // Display disease
+    Patient(string name, int age, string gender, string disease, int id): Person(name, id) {
+        this->age = age;
+        this->gender = gender;
+        this->disease = disease;
     }
 
-    int getAge() const { return age; }
-    string getGender() const { return gender; }
-    string getDisease() const { return disease; } // Getter for disease
+    void displayInfo() {
+        Person::displayInfo();
+        cout << "Age: " << age << "\nGender: " << gender << "\nDisease: " << disease << endl; 
+    }
+
+    int getAge() { return age; }
+    string getGender() { return gender; }
+    string getDisease() { return disease; } 
 };
 
-// Doctor class derived from Person
 class Doctor : public Person {
 public:
-    Doctor(const string& name, int id) : Person(name, id) {}
+    Doctor(string name, int id): Person(name, id) {}
 
-    void displayInfo() const override {
+    void displayInfo() {
         Person::displayInfo();
         cout << "Role: Doctor" << endl;
     }
 };
 
-// Appointment class
 class Appointment {
-private:
+public:
     int patientId;
     int doctorId;
     string date;
     string timeSlot;
 
-public:
-    Appointment(int patientId, int doctorId, const string& date, const string& timeSlot)
-        : patientId(patientId), doctorId(doctorId), date(date), timeSlot(timeSlot) {}
+    Appointment(int patientId, int doctorId, string date, string timeSlot) {
+        this->patientId = patientId;
+        this->doctorId = doctorId;
+        this->date = date;
+        this->timeSlot = timeSlot;
+    }
 
-    void displayAppointment(const Patient& patient, const Doctor& doctor) const {
+    void displayAppointment(Patient patient, Doctor doctor) {
         cout << "Patient ID: " << patient.getId()
              << " || Name: " << patient.getName()
              << " || Age: " << patient.getAge()
              << " || Gender: " << patient.getGender()
-             << " || Disease: " << patient.getDisease() << endl; // Show disease info
+             << " || Disease: " << patient.getDisease() << endl; 
 
         cout << "Doctor ID: " << doctor.getId()
              << " || Name: " << doctor.getName() << endl;
@@ -102,37 +99,29 @@ public:
         cout << "Date: " << date << " || Time Slot: " << timeSlot << "\n";
         cout << "---------------------------------------------------\n";
     }
-
-    int getPatientId() const { 
-        return patientId; 
-    }
-    int getDoctorId() const { 
-        return doctorId; 
-    }
 };
 
 // Billing class
 class Billing {
 public:
-    void generateBill(int patientId, const vector<Appointment>& appointments) const {
+    void generateBill(int patientId, vector<Appointment> appointments) {
         int total = 0;
-        for (const auto& appointment : appointments) {
-            if (appointment.getPatientId() == patientId) {
-                total += 500;  // Fixed cost per appointment
+        for (int i = 0; i < appointments.size(); i++) {
+            if (appointments[i].patientId == patientId) {
+                total += 500;  
             }
         }
         cout << "\nTotal Bill for Patient ID " << patientId << ": " << total << " units\n";
     }
 };
 
-// Ward class to manage beds
 class Ward {
-private:
+public:
     vector<int> beds;
     int totalBeds;
 
-public:
-    Ward(int totalBeds) : totalBeds(totalBeds) {
+    Ward(int totalBeds) {
+        this->totalBeds = totalBeds;
         beds.resize(totalBeds, 0);
     }
 
@@ -154,26 +143,29 @@ public:
         }
     }
 
-    void viewBedStatus() const {
+    void viewBedStatus() {
         printHeader("Bed Status");
-        for (int i = 0; i < totalBeds; ++i) {
-            cout << "Bed " << i << ": " << (beds[i] == 0 ? "Free" : "Occupied") << endl;
+        for (int i = 0; i < totalBeds; i++) {
+            cout << "Bed " << i << ": ";
+            if (beds[i] == 0) {
+                cout << "Free" << endl;
+            } else {
+                cout << "Occupied" << endl;
+            }
         }
     }
 };
 
-// Admin class to manage patients and appointments
 class Admin {
 public:
-    void managePatients(vector<Patient>& patients, vector<Appointment>& appointments, const vector<Doctor>& doctors) {
+    void managePatients(vector<Patient>& patients, vector<Appointment>& appointments, vector<Doctor>& doctors) {
         int choice;
         do {
             printHeader("Manage Patients");
             cout << "1. Add Patient\n2. Delete Patient\n3. View Patients\n4. View Appointments\n5. Book Appointment\n6. View Billing\n7. Go Back\n\nEnter choice: ";
             cin >> choice;
 
-            switch (choice) {
-            case 1: {
+            if (choice == 1) {
                 string name, gender, disease;
                 int age;
                 cin.ignore();
@@ -184,43 +176,37 @@ public:
                 cin.ignore();
                 cout << "Enter Gender: ";
                 getline(cin, gender);
-                cout << "Enter Disease: "; // Ask for disease
+                cout << "Enter Disease: "; 
                 getline(cin, disease);
                 int id = patients.size() + 1;
-                patients.emplace_back(name, age, gender, disease, id); // Include disease
+                patients.push_back(Patient(name, age, gender, disease, id)); 
                 cout << "\nPatient added successfully!\n";
-                break;
-            }
-            case 2: {
+            } 
+            else if (choice == 2) {
                 int id;
                 cout << "Enter Patient ID to delete: ";
                 cin >> id;
-                auto it = remove_if(patients.begin(), patients.end(),
-                                    [id](const Patient& p) { return p.getId() == id; });
-                if (it != patients.end()) {
-                    patients.erase(it, patients.end());
-                    cout << "\nPatient deleted successfully!\n";
-                } else {
-                    cout << "\nPatient not found!\n";
+                for (int i = 0; i < patients.size(); i++) {
+                    if (patients[i].getId() == id) {
+                        patients.erase(patients.begin() + i);
+                        cout << "\nPatient deleted successfully!\n";
+                        break;
+                    }
                 }
-                break;
-            }
-            case 3:
-                for (const auto& patient : patients) {
-                    patient.displayInfo();
+            } 
+            else if (choice == 3) {
+                for (int i = 0; i < patients.size(); i++) {
+                    patients[i].displayInfo();
                 }
-                break;
-            case 4:
-                for (const auto& appointment : appointments) {
-                    const Patient& patient = *find_if(patients.begin(), patients.end(),
-                                                      [&](const Patient& p) { return p.getId() == appointment.getPatientId(); });
-                    const Doctor& doctor = *find_if(doctors.begin(), doctors.end(),
-                                                    [&](const Doctor& d) { return d.getId() == appointment.getDoctorId(); });
-
-                    appointment.displayAppointment(patient, doctor);
+            } 
+            else if (choice == 4) {
+                for (int i = 0; i < appointments.size(); i++) {
+                    Patient patient = patients[appointments[i].patientId - 1];
+                    Doctor doctor = doctors[appointments[i].doctorId - 1];
+                    appointments[i].displayAppointment(patient, doctor);
                 }
-                break;
-            case 5: {
+            } 
+            else if (choice == 5) {
                 int patientId, doctorId;
                 string date, timeSlot;
 
@@ -234,31 +220,27 @@ public:
                 cout << "Enter Time Slot (e.g., 10:00-11:00): ";
                 getline(cin, timeSlot);
 
-                appointments.emplace_back(patientId, doctorId, date, timeSlot);
+                appointments.push_back(Appointment(patientId, doctorId, date, timeSlot));
                 cout << "\nAppointment booked successfully!\n";
-                break;
-            }
-            case 6: {
+            } 
+            else if (choice == 6) {
                 int patientId;
                 cout << "Enter Patient ID for Billing: ";
                 cin >> patientId;
                 Billing().generateBill(patientId, appointments);
-                break;
             }
-            case 7:
-                cout << "\nReturning to main menu...\n";
-                break;
-            default:
-                cout << "\nInvalid choice! Try again.\n";
-            }
-        } while (choice != 7);
+        } 
+        while (choice != 7);
     }
 };
 
-// Main function
 int main() {
     vector<Patient> patients;
-    vector<Doctor> doctors = {Doctor("Dr. Smith", 1), Doctor("Dr. Jones", 2), Doctor("Dr. Kate", 3), Doctor("Dr. Helen", 4) };
+    vector<Doctor> doctors;
+    doctors.push_back(Doctor("Dr. Smith", 1));
+    doctors.push_back(Doctor("Dr. Jones", 2));
+    doctors.push_back(Doctor("Dr. Kate", 3));
+    doctors.push_back(Doctor("Dr. Helen", 4));
     vector<Appointment> appointments;
     Admin admin;
     Ward ward(10);
@@ -271,13 +253,10 @@ int main() {
         cout << "A: Admin | W: Ward | Q: Quit\nEnter your choice: ";
         cin >> choice;
 
-        switch (choice) {
-        case 'A':
-        case 'a':
+        if (choice == 'A' || choice == 'a') {
             admin.managePatients(patients, appointments, doctors);
-            break;
-        case 'W':
-        case 'w': {
+        } 
+        else if (choice == 'W' || choice == 'w') {
             int bedChoice, bedNumber;
             cout << "1. Admit | 2. Discharge | 3. View Beds\nEnter choice: ";
             cin >> bedChoice;
@@ -291,19 +270,11 @@ int main() {
                 ward.dischargePatient(bedNumber);
             } else if (bedChoice == 3) {
                 ward.viewBedStatus();
-            } else {
-                cout << "Invalid choice!\n";
             }
-            break;
         }
-        case 'Q':
-        case 'q':
-            cout << "Exiting system...\n";
-            break;
-        default:
-            cout << "Invalid choice! Try again.\n";
-        }
-    } while (choice != 'Q' && choice != 'q');
+
+    } 
+    while (choice != 'Q' && choice != 'q');
 
     return 0;
 }
