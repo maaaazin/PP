@@ -31,7 +31,7 @@ This project was developed as a **CA3** assignment for the **PP** subject during
 
 ## Project Team
 
-| Group Member Name | Roll Call Number |
+| Group Member Name | PRN              |
 |-------------------|------------------|
 | Kritika Nair      | 23070122118      |
 | Madhura Panvelkar | 23070122127      |
