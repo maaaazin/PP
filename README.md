@@ -12,6 +12,8 @@ This project was developed as a **CA3** assignment for the **PP** subject during
 - **Appointment**: Handles scheduling and management of patient-doctor appointments.
 - **Billing**: Calculates billing for patients based on their appointments.
 - **Ward**: Manages hospital beds, including patient admissions and discharges.
+- **Emergency Ward**: Derived from `Ward`.
+- **Ambulance**: Handles scheduling of the ambulance.
 
 ## 2. Object-Oriented Concepts
 
