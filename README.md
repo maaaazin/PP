@@ -18,7 +18,6 @@ This project was developed as a **CA3** assignment for the **PP** subject during
 - **Encapsulation**: Protects patient, doctor, and appointment information by providing access through public methods, ensuring data security.
 - **Inheritance**: `Patient` and `Doctor` classes inherit from `Person`, reducing code redundancy and promoting reusability.
 - **Polymorphism**: Enables handling different types of persons (patients and doctors) using a common interface, with specific behaviors for each.
-- **Abstraction**: The system hides complex operations like appointment booking, billing calculation, and ward management behind simple function calls, improving usability.
 
 ## 3. Key Features
 
